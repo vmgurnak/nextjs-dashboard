@@ -32,23 +32,50 @@ export type State = {
     status?: string[];
   };
   message?: string | null;
-  isError: boolean;
 };
+
+// export type State = {
+//   errors?: {
+//     customerId?: string[];
+//     amount?: string[];
+//     status?: string[];
+//   };
+//   values?: {
+//     customerId?: string;
+//     amount?: string;
+//     status?: 'pending' | 'paid';
+//   };
+//   message?: string | null;
+//   isError: boolean;
+// };
 
 export async function createInvoice(prevState: State, formData: FormData) {
   // Validate form using Zod
+
   const validatedFields = CreateInvoice.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
   });
 
+  // const rawValues = {
+  //   customerId: formData.get('customerId')?.toString(),
+  //   amount: formData.get('amount')?.toString(),
+  //   status: formData.get('status')?.toString() as
+  //     | 'pending'
+  //     | 'paid'
+  //     | undefined,
+  // };
+
+  // const validatedFields = CreateInvoice.safeParse(rawValues);
+
   // If form validation fails, return errors early. Otherwise, continue.
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
+      // values: rawValues,
       message: 'Missing Fields. Failed to Create Invoice.',
-      isError: true,
+      // isError: true,
     };
   }
 
